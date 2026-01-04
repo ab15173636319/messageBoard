@@ -114,7 +114,7 @@ cd ../message_board_vue
 pnpm install
 ```
 
-### 配置环境变量
+### nodeJs配置环境变量`config.env`
 
 在 `api/config.env` 文件中配置：
 
