@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import Navigation from './components/layout/Navigation.vue';
+import Navigation from '@/components/layout/Navigation.vue';
+// @ts-ignore
+import FooterView from '@/components/layout/FooterView.vue';
 import { onMounted, onBeforeMount } from "vue"
 
 function loadImage(entries: IntersectionObserverEntry[]) {
@@ -72,6 +74,7 @@ onMounted(() => {
     <Transition name="z-axis">
       <RouterView></RouterView>
     </Transition>
+    <footer-view></footer-view>
   </div>
 </template>
 

@@ -13,7 +13,7 @@ const rules = {
     password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 const formData = ref({
-    username: 'root',
+    username: 'vistor',
     password: '123456'
 })
 const remember = ref(false)
