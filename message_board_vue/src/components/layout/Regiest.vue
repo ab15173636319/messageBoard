@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { User, Message, Lock } from '@element-plus/icons-vue'
 import type { RegisterParams } from '@/types/user'
 import { useUserStore } from '@/stores/modules/user'
+import type { FormInstance } from 'element-plus'
 
 const userStore = useUserStore()
 const formData = ref<RegisterParams>({
@@ -63,9 +64,13 @@ const rules = {
     nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }]
 }
 
-
+const formRef = ref<FormInstance>()
 const handleRegister = () => {
-    userStore.register(formData.value as RegisterParams)
+    formRef.value?.validate((valid) => {
+        if (valid) {
+            userStore.register(formData.value as RegisterParams)
+        }
+    })
 }
 </script>
 
@@ -84,7 +89,8 @@ const handleRegister = () => {
                 </div>
             </template>
 
-            <el-form :model="formData" label-position="top" class="register-form" size="large">
+            <el-form ref="formRef" :model="formData" label-position="top" class="register-form" size="large"
+                :rules="rules" v-loading="userStore.loading">
                 <el-form-item prop="username">
                     <el-input v-model="formData.username" placeholder="请输入用户名" clearable class="custom-input">
                         <template #prefix>

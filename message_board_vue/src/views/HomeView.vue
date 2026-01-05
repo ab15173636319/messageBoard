@@ -6,8 +6,8 @@
                 <div class="flex justify-center items-center">
                     <div
                         class=" w-40 h-40 flex justify-center items-center rounded-full shadow-lg shadow-cyan-500/50 mb-10">
-                        <img class="w-40 h-40 rounded-full object-cover" :src="userStore.userInfo?.avatar || '/bg.png'"
-                            alt="">
+                        <img class="w-40 h-40 rounded-full object-cover"
+                            :src="userStore.userInfo?.avatar || '/avatar.png'" alt="">
                     </div>
                 </div>
 
@@ -37,7 +37,6 @@
 <script setup lang="ts">
 import Chat from '@/components/layout/Chat.vue';
 import ChatList from '@/components/layout/ChatList.vue';
-import { chatList } from '@/assets/chatList';
 import { onMounted, ref } from 'vue';
 import { useMessageStore } from '@/stores/modules/message';
 import { useUserStore } from '@/stores/modules/user';

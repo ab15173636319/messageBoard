@@ -13,7 +13,8 @@
                     </el-icon>
                 </el-upload>
                 <div class="tips">
-                    <p>支持 JPG、PNG 格式，大小不超过 2MB</p>
+                    <!-- <p>支持 JPG、PNG 格式，大小不超过 2MB</p> -->
+                    <p>暂时只支持上传链接，文件上传敬请期待...</p>
                 </div>
                 <el-input v-model="avatarUrl" type="text" placeholder="请输入头像URL" />
                 <el-button type="primary" @click="handleSave" :loading="loading">

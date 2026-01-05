@@ -1,4 +1,6 @@
+import { ElMessage } from "element-plus";
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/modules/user";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,20 +81,40 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: () => import("@/views/NotFound.vue"),
+    },
   ],
 });
 
 // 路由切换前
 router.beforeEach(() => {
-  document.body.style.overflow = "hidden"; // 禁用滚动
+  document.body.style.overflow = "hidden";
 });
 
 // 路由切换后
 router.afterEach(() => {
-  // 等待动画结束后恢复滚动（假设动画时长为 500ms）
   setTimeout(() => {
     document.body.style.overflow = "";
   }, 550);
+});
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+  if (to.path.startsWith("/manage")) {
+    if (userStore.userInfo?.role !== "admin") {
+      ElMessage.error("您没有权限访问该页面！");
+      next({
+        name: "Home",
+      });
+      return;
+    }
+    next();
+    return;
+  }
+  next();
 });
 
 export default router;

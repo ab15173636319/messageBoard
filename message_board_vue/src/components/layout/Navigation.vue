@@ -22,6 +22,8 @@ const { userInfo } = storeToRefs(userStore)
 // 初始化用户数据
 onMounted(async () => {
     await userStore.initUserStore()
+
+
 })
 
 watch(() => route.path, (newPath) => {
@@ -124,10 +126,10 @@ const filterNavigation = computed(() => {
             </div>
 
             <!-- 中间导航链接 -->
-            <div class="nav-links">
+            <div class="nav-links" ref="nav-links">
                 <a v-for="item in filterNavigation" :key="item.path"
                     :class="['nav-link flex items-center gap-2', { active: isActive(item.path) }]"
-                    @click="navigateTo(item.path)">
+                    @click.prevent="navigateTo(item.path)">
                     <el-icon :size="20" :color="isActive(item.path) ? 'blue' : 'gray'">
                         <component :is="item.icon" />
                     </el-icon>
@@ -141,7 +143,7 @@ const filterNavigation = computed(() => {
                 <div class="user-menu-container">
                     <div v-if="isLoggedIn" class="user-info" @click="toggleUserMenu">
                         <span class="user-avatar">
-                            <el-avatar :size="32" :src="userInfo?.avatar || '/avatar.gif'" />
+                            <el-avatar :size="32" :src="userInfo?.avatar || '/avatar.png'" />
                         </span>
                         <span class="user-name">{{ userInfo?.username }}</span>
                         <span class="dropdown-arrow" :class="{ open: showUserMenu }">▼</span>

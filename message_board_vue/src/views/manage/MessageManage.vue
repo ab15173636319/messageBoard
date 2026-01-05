@@ -4,7 +4,7 @@
             <h2 class="title">留言管理</h2>
             <p class="desc">管理所有用户的留言</p>
         </div>
-        <div class="content" v-loading="loading">
+        <div class="content">
             <ChatList :list="messageList" :manage="true" />
         </div>
     </div>

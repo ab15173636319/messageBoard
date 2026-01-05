@@ -43,6 +43,8 @@ export const useUserStore = defineStore("user", () => {
       if (res.code === 200) {
         ElMessage.success("欢迎回来！");
         token.value = res.data.token;
+        console.log(remember);
+
         saveData(token.value, "token", remember);
         await queryUserInfo();
         router.push("/");
@@ -64,6 +66,12 @@ export const useUserStore = defineStore("user", () => {
       // @ts-ignore
       if (res.code === 200) {
         ElMessage.success("注册成功！");
+        router.push({
+          name: "Auth",
+          params: {
+            tab: "login",
+          },
+        });
       } else {
         // @ts-ignore
         ElMessage.error(res.message);

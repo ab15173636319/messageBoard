@@ -1,42 +1,315 @@
-# message_board_vue
+# 留言板系统 - 前端应用
 
-This template should help get you started developing with Vue 3 in Vite.
+这是留言板系统的前端应用，基于 Vue 3 + TypeScript 构建的现代化单页应用。
 
-## Recommended IDE Setup
+## ✨ 功能特性
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### 用户功能
+- ✅ 用户注册与登录（JWT 认证）
+- ✅ 留言发布与管理
+- ✅ 富文本编辑器（支持表情、格式化）
+- ✅ 留言回复（添加、编辑、删除）
+- ✅ 留言点赞（点赞/取消点赞）
+- ✅ 用户个人中心
+  - 个人信息管理
+  - 头像管理
+  - 密码修改
+  - 我的留言管理
+  - 我的回复管理
 
-## Recommended Browser Setup
+### 管理员功能
+- ✅ 留言管理（查看、删除所有留言）
+- ✅ 回复管理（查看、删除所有回复）
+- ✅ 用户管理（查看、编辑、删除用户）
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### 其他功能
+- ✅ 响应式设计（支持移动端）
+- ✅ 搜索功能
+- ✅ 分页显示
+- ✅ 数据实时更新
+- ✅ 路由守卫（权限控制、参数验证）
+- ✅ 404 错误页面
 
-## Type Support for `.vue` Imports in TS
+## 🛠️ 技术栈
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **框架**: Vue 3.5+ (Composition API)
+- **语言**: TypeScript 5.9+
+- **UI 组件库**: Element Plus 2.13+
+- **样式**: Tailwind CSS 4.1+
+- **状态管理**: Pinia 3.0+
+- **路由**: Vue Router 4.6+
+- **富文本编辑器**: WangEditor 5.1+
+- **HTTP 客户端**: Axios 1.13+
+- **日期处理**: Day.js 1.11+
+- **图标库**: 
+  - Element Plus Icons
+  - Heroicons
+- **构建工具**: Vite 7.3+
+- **代码规范**: ESLint 9.39+
 
-## Customize configuration
+## 📁 项目结构
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+```
+message_board_vue/
+├── public/                    # 静态资源
+│   ├── avatar.png            # 默认头像
+│   ├── favicon.ico           # 网站图标
+│   └── logo.svg              # Logo
+├── src/
+│   ├── api/                  # API 接口封装
+│   │   ├── user.ts           # 用户相关 API
+│   │   └── message.ts         # 留言相关 API
+│   ├── assets/               # 资源文件
+│   ├── components/           # 组件
+│   │   ├── base/             # 基础组件
+│   │   │   └── ChatListItem.vue  # 聊天列表项
+│   │   └── layout/           # 布局组件
+│   │       ├── Chat.vue      # 富文本编辑器
+│   │       ├── ChatList.vue  # 留言列表
+│   │       ├── Login.vue    # 登录组件
+│   │       ├── Navigation.vue # 导航栏
+│   │       ├── Regiest.vue  # 注册组件
+│   │       └── Search.vue    # 搜索组件
+│   ├── config/               # 配置文件
+│   │   ├── emoji.ts          # 表情配置
+│   │   ├── manage.ts         # 管理页面配置
+│   │   └── navigation.ts     # 导航配置
+│   ├── directive/            # 自定义指令
+│   │   ├── index.ts          # 指令入口
+│   │   └── modules/
+│   │       └── vReplay.ts    # 回复指令
+│   ├── router/               # 路由配置
+│   │   └── index.ts          # 路由定义（包含路由守卫）
+│   ├── stores/               # 状态管理
+│   │   ├── index.ts          # Store 入口
+│   │   └── modules/
+│   │       ├── message.ts    # 留言状态管理
+│   │       └── user.ts       # 用户状态管理
+│   ├── types/                # TypeScript 类型定义
+│   │   ├── chat.d.ts         # 聊天相关类型
+│   │   ├── message.d.ts      # 留言相关类型
+│   │   └── user.d.ts         # 用户相关类型
+│   ├── utils/                # 工具函数
+│   │   ├── dayJs.ts          # 日期处理
+│   │   ├── localtion.ts      # 位置相关
+│   │   ├── overflow.ts       # 溢出处理
+│   │   ├── request.ts        # HTTP 请求封装
+│   │   ├── saveToken.ts      # Token 存储
+│   │   └── setSession.ts     # Session 设置
+│   ├── views/                # 页面视图
+│   │   ├── manage/           # 管理页面
+│   │   │   ├── MessageManage.vue  # 留言管理
+│   │   │   ├── RemarkManage.vue   # 回复管理
+│   │   │   └── UserManage.vue      # 用户管理
+│   │   ├── user/             # 用户页面
+│   │   │   ├── AvatarManage.vue   # 头像管理
+│   │   │   ├── ChangePassword.vue  # 修改密码
+│   │   │   ├── MessageManage.vue   # 我的留言
+│   │   │   ├── Profile.vue         # 个人资料
+│   │   │   └── RemarkView.vue       # 我的回复
+│   │   ├── AuthView.vue      # 认证页面（登录/注册）
+│   │   ├── HomeView.vue      # 首页
+│   │   ├── ManageView.vue    # 管理页面容器
+│   │   ├── MessageView.vue   # 留言详情页
+│   │   ├── NotFound.vue      # 404 错误页面
+│   │   ├── PlanView.vue      # 开发计划页面
+│   │   ├── Setview.vue       # 设置页面
+│   │   └── UserView.vue      # 用户中心容器
+│   ├── App.vue               # 根组件
+│   ├── App.css               # 全局样式
+│   └── main.ts               # 应用入口
+├── .eslintrc.ts              # ESLint 配置
+├── env.d.ts                  # 环境类型定义
+├── index.html                # HTML 模板
+├── package.json              # 依赖配置
+├── tsconfig.json             # TypeScript 配置（主配置）
+├── tsconfig.app.json         # TypeScript 配置（应用）
+├── tsconfig.node.json        # TypeScript 配置（Node）
+└── vite.config.ts            # Vite 配置
+```
 
-## Project Setup
+## 🚀 快速开始
 
-```sh
+### 环境要求
+
+- Node.js >= 20.19.0 或 >= 22.12.0
+- pnpm >= 10.14.0
+
+### 安装依赖
+
+```bash
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+### 开发环境配置
 
-```sh
+开发环境已配置代理，将 `/api` 请求代理到后端服务 `http://localhost:3000`。
+
+如需修改代理配置，请编辑 `vite.config.ts`：
+
+```typescript
+server: {
+  proxy: {
+    "/api": {
+      target: "http://localhost:3000",  // 后端服务地址
+      changeOrigin: true,
+      rewrite: (path) => path.replace(/^\/api/, ""),
+    },
+  },
+}
+```
+
+### 启动开发服务器
+
+```bash
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+应用将在 `http://localhost:5173` 启动。
 
-```sh
+### 类型检查
+
+```bash
+pnpm type-check
+```
+
+### 构建生产版本
+
+```bash
 pnpm build
 ```
+
+构建产物将输出到 `dist/` 目录。
+
+### 预览生产构建
+
+```bash
+pnpm preview
+```
+
+## 🗺️ 路由说明
+
+### 路由列表
+
+- `/` - 首页（留言列表和发布）
+- `/auth/:tab` - 认证页面（登录/注册）
+- `/message/:id/:reply?` - 留言详情页（`id` 必填，`reply` 可选）
+- `/plan` - 开发计划页面
+- `/user/:id` - 用户中心（重定向到 `/user/:id/messages`）
+  - `/user/:id/messages` - 我的留言
+  - `/user/:id/remarks` - 我的回复
+  - `/user/:id/avatar` - 头像管理
+  - `/user/:id/profile` - 个人资料
+  - `/user/:id/password` - 修改密码
+- `/manage` - 管理页面（仅管理员，重定向到 `/manage/messages`）
+  - `/manage/messages` - 留言管理
+  - `/manage/remarks` - 回复管理
+  - `/manage/users` - 用户管理
+- `/:pathMatch(.*)*` - 404 错误页面
+
+### 路由守卫
+
+系统实现了路由守卫机制，确保页面访问的安全性：
+
+1. **`/message/:id` 路由保护**
+   - 必须提供有效的 `id` 参数
+   - 缺少 `id` 时将重定向到首页并显示错误提示
+
+2. **`/manage/*` 路由保护**
+   - 仅管理员（`role === "admin"`）可以访问
+   - 非管理员访问将被重定向到首页并提示权限不足
+
+3. **404 页面**
+   - 访问不存在的路由时显示友好的 404 错误页面
+   - 提供返回首页和返回上一页的选项
+
+## 📦 状态管理
+
+使用 Pinia 进行状态管理，包含以下模块：
+
+### User Store (`stores/modules/user.ts`)
+
+管理用户相关状态：
+- `token` - JWT 令牌
+- `userInfo` - 用户信息
+- `loading` - 加载状态
+
+主要方法：
+- `initUserStore()` - 初始化用户数据
+- `login()` - 用户登录
+- `register()` - 用户注册
+- `queryUserInfo()` - 查询用户信息
+- `updateUserInfo()` - 更新用户信息
+- `updatePassword()` - 修改密码
+- `updateAvatar()` - 更新头像
+- `logout()` - 退出登录
+
+### Message Store (`stores/modules/message.ts`)
+
+管理留言相关状态：
+- `messageList` - 留言列表
+- `loading` - 加载状态
+
+主要方法：
+- `queryMessage()` - 查询留言列表
+- `sendMessage()` - 发送留言
+- `deleteMessage()` - 删除留言
+- 等...
+
+## 🔧 开发工具
+
+### 推荐 IDE 设置
+
+- [VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar)（禁用 Vetur）
+
+### 推荐浏览器扩展
+
+**Chromium 浏览器（Chrome、Edge、Brave 等）**:
+- [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+- [在 Chrome DevTools 中启用自定义对象格式化器](http://bit.ly/object-formatters)
+
+**Firefox**:
+- [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+- [在 Firefox DevTools 中启用自定义对象格式化器](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+
+### TypeScript 支持
+
+TypeScript 无法默认处理 `.vue` 导入的类型信息，因此我们使用 `vue-tsc` 替代 `tsc` CLI 进行类型检查。在编辑器中，需要 [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) 来让 TypeScript 语言服务识别 `.vue` 类型。
+
+## 📝 开发规范
+
+### 代码风格
+
+- 使用 ESLint 进行代码检查
+- 遵循 Vue 3 Composition API 最佳实践
+- 使用 TypeScript 进行类型定义
+- 组件使用 `<script setup>` 语法
+
+### 文件命名
+
+- 组件文件使用 PascalCase：`UserProfile.vue`
+- 工具文件使用 camelCase：`saveToken.ts`
+- 类型定义文件使用 `.d.ts` 后缀：`user.d.ts`
+
+### 目录结构
+
+- `api/` - API 接口封装
+- `components/` - 可复用组件
+- `views/` - 页面级组件
+- `stores/` - 状态管理
+- `utils/` - 工具函数
+- `types/` - 类型定义
+
+## 🔗 相关链接
+
+- [Vue 3 文档](https://vuejs.org/)
+- [TypeScript 文档](https://www.typescriptlang.org/)
+- [Element Plus 文档](https://element-plus.org/)
+- [Tailwind CSS 文档](https://tailwindcss.com/)
+- [Pinia 文档](https://pinia.vuejs.org/)
+- [Vue Router 文档](https://router.vuejs.org/)
+- [Vite 文档](https://vite.dev/)
+
+## 📄 许可证
+
+ISC

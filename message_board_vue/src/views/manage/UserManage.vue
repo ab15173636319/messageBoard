@@ -21,7 +21,7 @@
                 <div v-for="user in paginatedUsers" :key="user.uid" class="user-card">
                     <div class="user-header">
                         <div class="user-info">
-                            <img class="user-avatar" :src="user.avatar || '/bg.png'"
+                            <img class="user-avatar" :src="user.avatar || '/avatar.png'"
                                 :alt="user.nickname || user.username" />
                             <div class="user-details">
                                 <div class="user-name-row">

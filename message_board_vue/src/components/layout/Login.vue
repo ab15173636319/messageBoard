@@ -21,7 +21,7 @@ const remember = ref(false)
 const handleLogin = () => {
     loginFormRef.value?.validate((valid) => {
         if (valid) {
-            userStore.login(formData.value as LoginParams)
+            userStore.login(formData.value as LoginParams, remember.value)
         }
     })
 }
@@ -43,7 +43,7 @@ const handleLogin = () => {
             </template>
 
             <el-form :model="formData" label-position="top" class="login-form" :rules="rules" size="large"
-                ref="loginFormRef">
+                ref="loginFormRef" v-loading="userStore.loading">
                 <el-form-item prop="username">
                     <el-input v-model="formData.username" placeholder="请输入用户名" clearable class="custom-input">
                         <template #prefix>

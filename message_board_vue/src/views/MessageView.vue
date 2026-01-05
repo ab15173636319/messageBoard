@@ -13,7 +13,8 @@
                 <div class="message-header">
                     <!-- 头像 -->
                     <div class="avatar-wrapper">
-                        <img class="avatar" :src="currentMessage.user?.avatar || '/bg.png'" :alt="currentMessage.name">
+                        <img class="avatar" :src="currentMessage.user?.avatar || '/avatar.png'"
+                            :alt="currentMessage.name">
                     </div>
 
                     <!-- 用户信息 -->
@@ -55,7 +56,7 @@
                     <TransitionGroup name="list">
                         <div v-for="reply in currentMessage.remark" :key="reply.rid" class="reply-card">
                             <div class="reply-header">
-                                <img class="reply-avatar" :src="reply.user?.avatar || '/bg.png'"
+                                <img class="reply-avatar" :src="reply.user?.avatar || '/avatar.png'"
                                     :alt="reply.user?.nickname || reply.name">
                                 <div class="reply-info">
                                     <span class="reply-name">{{ reply.user?.nickname || reply.name }}</span>
@@ -143,6 +144,15 @@ onMounted(async () => {
         if (userStore.userInfo) {
             await messageStore.queryLike(currentMessage.value.mid)
         }
+    }
+
+    console.log(route.params.id);
+
+    if (!route.params.id) {
+        ElMessage.error("错误页面！");
+        router.push({
+            name: "Home",
+        });
     }
 })
 
