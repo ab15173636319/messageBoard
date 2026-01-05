@@ -6,7 +6,7 @@
                 <div class="flex justify-center items-center">
                     <div
                         class=" w-40 h-40 flex justify-center items-center rounded-full shadow-lg shadow-cyan-500/50 mb-10">
-                        <img class="w-40 h-40 rounded-full object-cover"
+                        <img class="lazy-image w-40 h-40 rounded-full object-cover"
                             :src="userStore.userInfo?.avatar || '/avatar.png'" alt="">
                     </div>
                 </div>

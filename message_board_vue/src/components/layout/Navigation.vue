@@ -121,7 +121,7 @@ const filterNavigation = computed(() => {
         <div class="nav-container">
             <!-- 左侧 Logo -->
             <div class="nav-logo flex items-center gap-2" @click="navigateTo('/')">
-                <img class="w-10 h-10" src="/logo.svg" alt="" srcset="">
+                <img class="lazy-image w-10 h-10" src="/logo.svg" alt="" srcset="">
                 <span class="logo-text">留言板</span>
             </div>
 

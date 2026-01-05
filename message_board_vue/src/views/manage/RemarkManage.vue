@@ -21,7 +21,7 @@
                 <div v-for="remark in paginatedRemarks" :key="remark.rid" class="remark-card">
                     <div class="remark-header">
                         <div class="remark-info">
-                            <img class="remark-avatar" :src="remark.user?.avatar || '/avatar.png'"
+                            <img class="lazy-image remark-avatar" :src="remark.user?.avatar || '/avatar.png'"
                                 :alt="remark.user?.nickname || remark.name" />
                             <div class="remark-user-info">
                                 <span class="remark-name">{{ remark.user?.nickname || remark.name }}</span>

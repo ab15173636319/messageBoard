@@ -2,7 +2,7 @@
     <div class="chat-list-item">
         <div class="item-header">
             <div class="avatar-wrapper">
-                <img class="avatar" :src="props.item.user?.avatar || '/avatar.png'" :alt="props.item.name">
+                <img class="lazy-image avatar" :src="props.item.user?.avatar || '/avatar.png'" :alt="props.item.name">
             </div>
             <div class="item-info">
                 <div class="item-title">

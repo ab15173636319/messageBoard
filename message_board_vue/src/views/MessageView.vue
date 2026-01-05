@@ -13,7 +13,7 @@
                 <div class="message-header">
                     <!-- 头像 -->
                     <div class="avatar-wrapper">
-                        <img class="avatar" :src="currentMessage.user?.avatar || '/avatar.png'"
+                        <img class="lazy-image avatar" :src="currentMessage.user?.avatar || '/avatar.png'"
                             :alt="currentMessage.name">
                     </div>
 
