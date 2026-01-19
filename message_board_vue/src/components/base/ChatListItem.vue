@@ -12,17 +12,15 @@
                 <div class="line-clamp-1 text-sm">{{ props.item.content }}</div>
             </div>
         </div>
-        <div class="item-actions">
-            <el-button v-if="props.manage" type="danger" plain :icon="Delete" size="small" @click="handleDelete"
-                class="action-btn">
-                <span class="btn-text">删除</span>
+        <div class="item-actions flex flex-col justify-center align-center md:flex-row">
+            <el-button v-if="props.manage" type="danger" plain icon="EditPen" size="small" @click="handleDelete">
+                删除
             </el-button>
-            <el-button v-else type="primary" plain :icon="Comment" size="small" @click="handleReplay"
-                class="action-btn">
-                <span class="btn-text">回复</span>
+            <el-button v-else type="primary" plain icon="EditPen" size="small" @click="handleReplay">
+                回复
             </el-button>
-            <el-button type="info" plain :icon="View" size="small" @click="handleView" class="action-btn">
-                <span class="btn-text">查看</span>
+            <el-button style="margin: 0" type="success" plain icon="View" size="small" @click="handleView">
+                查看
             </el-button>
         </div>
     </div>
@@ -33,7 +31,6 @@ import type { MessageItem } from "@/types/message";
 import { formatTime } from "@/utils/dayJs";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { EditPen, View, Delete, Comment } from "@element-plus/icons-vue"; // 导入图标
 
 const router = useRouter();
 const props = defineProps<{
@@ -41,7 +38,37 @@ const props = defineProps<{
     manage?: boolean;
 }>();
 
-// ... 其他代码保持不变
+const setAvatar = computed(() => {
+    if (!props.item.avatar) throw new Error("avatar is required.");
+    const acceptExts = [".gif", ".png", ".jpg", ".jpeg", ".webp"];
+    const endWith = props.item.avatar.substr(props.item.avatar.lastIndexOf("."));
+    if (!acceptExts.includes(endWith))
+        throw new Error("avatar must be a valid image file.");
+    return props.item.avatar;
+});
+
+const emit = defineEmits<{
+    (e: "replay", item: MessageItem): void;
+    (e: "view", item: MessageItem): void;
+    (e: "delete", item: MessageItem): void;
+}>();
+
+const handleReplay = () => {
+    emit("replay", props.item);
+};
+
+const handleView = () => {
+    router.push({
+        name: "Message",
+        params: {
+            id: props.item._id,
+        },
+    });
+};
+
+const handleDelete = () => {
+    emit("delete", props.item);
+};
 </script>
 
 <style scoped>
@@ -95,15 +122,7 @@ const props = defineProps<{
 }
 
 .item-actions {
-    @apply flex flex-col gap-2 shrink-0;
-}
-
-.action-btn {
-    @apply flex items-center justify-center;
-}
-
-.btn-text {
-    @apply ml-1;
+    @apply flex items-center gap-2 shrink-0;
 }
 
 /* 移动端适配 */
@@ -140,25 +159,17 @@ const props = defineProps<{
     }
 
     .item-actions {
-        @apply flex-row justify-end gap-1.5 w-full mt-2;
-        @apply flex-wrap;
-        /* 允许换行 */
+        @apply flex flex-row justify-end gap-1.5;
+        @apply w-full;
     }
 
-    .action-btn {
-        @apply flex-1 min-w-[60px] max-w-[100px];
-        @apply py-1.5 px-2;
+    .item-actions :deep(.el-button) {
+        @apply text-xs px-2 py-1;
+        @apply flex-1;
     }
 
-    /* 在更小的屏幕上隐藏文本，只显示图标 */
-    @media (max-width: 480px) {
-        .btn-text {
-            @apply hidden sm:block;
-        }
-
-        .action-btn {
-            @apply min-w-[auto] p-2;
-        }
+    .item-actions :deep(.el-button span) {
+        @apply hidden;
     }
 }
 </style>
