@@ -34,116 +34,124 @@
 </template>
 
 <script setup lang="ts">
-import type { ChatItem } from '@/types/chat';
-import ChatListItem from '@/components/base/ChatListItem.vue';
-import Search from '@/components/layout/Search.vue';
-import { computed, ref, watch } from 'vue';
-import { hideOverflow } from '@/utils/overflow';
-import { useRouter } from 'vue-router';
-import type { MessageItem } from '@/types/message';
-import { ElMessageBox } from 'element-plus';
-import { useMessageStore } from '@/stores/modules/message';
+import type { ChatItem } from "@/types/chat";
+import ChatListItem from "@/components/base/ChatListItem.vue";
+import Search from "@/components/layout/Search.vue";
+import { computed, ref, watch } from "vue";
+import { hideOverflow } from "@/utils/overflow";
+import { useRouter } from "vue-router";
+import type { MessageItem } from "@/types/message";
+import { ElMessageBox } from "element-plus";
+import { useMessageStore } from "@/stores/modules/message";
 
-const router = useRouter()
-const messageStore = useMessageStore()
+const router = useRouter();
+const messageStore = useMessageStore();
 const props = defineProps<{
-    list: MessageItem[]
-    manage?: boolean
-}>()
+    list: MessageItem[];
+    manage?: boolean;
+}>();
 
-const pageNumber = ref(1)
-const pageSize = ref(5)
-const searchKeyword = ref('')
+const pageNumber = ref(1);
+const pageSize = ref(5);
+const searchKeyword = ref("");
 
 // 过滤后的列表（根据搜索关键词）
 const filteredList = computed(() => {
     if (!searchKeyword.value.trim()) {
-        return props.list
+        return props.list;
     }
 
-    const keyword = searchKeyword.value.trim().toLowerCase()
-    return props.list.filter(item => {
-        const contentMatch = item.content.toLowerCase().includes(keyword)
-        const nameMatch = item.name.toLowerCase().includes(keyword)
-        return contentMatch || nameMatch
-    })
-})
+    const keyword = searchKeyword.value.trim().toLowerCase();
+    return props.list.filter((item) => {
+        const contentMatch = item.content.toLowerCase().includes(keyword);
+        const nameMatch = item.name.toLowerCase().includes(keyword);
+        return contentMatch || nameMatch;
+    });
+});
 
 // 总页数（基于过滤后的列表）
 const total = computed(() => {
-    return Math.ceil(filteredList.value.length / pageSize.value) || 1
-})
+    return Math.ceil(filteredList.value.length / pageSize.value) || 1;
+});
 
 // 当前页显示的数据
 const displayList = computed(() => {
-    const start = (pageNumber.value - 1) * pageSize.value
-    const end = start + pageSize.value
-    return filteredList.value.slice(start, end)
-})
+    const start = (pageNumber.value - 1) * pageSize.value;
+    const end = start + pageSize.value;
+    return filteredList.value.slice(start, end);
+});
 
 // 搜索处理
 const handleSearch = (keyword: string) => {
-    searchKeyword.value = keyword
-    pageNumber.value = 1 // 搜索时重置到第一页
-}
+    searchKeyword.value = keyword;
+    pageNumber.value = 1; // 搜索时重置到第一页
+};
 
 // 清除搜索
 const handleClear = () => {
-    searchKeyword.value = ''
-    pageNumber.value = 1
-}
+    searchKeyword.value = "";
+    pageNumber.value = 1;
+};
 
 // 上一页
 const handlePreviousPage = () => {
     if (pageNumber.value > 1) {
-        pageNumber.value--
+        pageNumber.value--;
     }
-}
+};
 
 // 下一页
 const handleNextPage = () => {
     if (pageNumber.value < total.value) {
-        pageNumber.value++
+        pageNumber.value++;
     }
-}
+};
 
 // 回复处理
 const handleReplay = (item: MessageItem) => {
     router.push({
-        name: 'Message',
+        name: "Message",
         params: {
             id: item._id,
-            reply: 1
-        }
-    })
-}
+            reply: 1,
+        },
+    });
+};
 
 const handleDelete = (item: MessageItem) => {
     if (!props.manage) return;
-    ElMessageBox.confirm('确定删除该留言吗？', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-    }).then(() => {
-        console.log(item);
-        messageStore.deleteMessage({ mid: item.mid })
-        messageStore.queryMessage()
-    }).catch(() => {
-        console.log('取消')
+    ElMessageBox.confirm("确定删除该留言吗？", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
     })
-}
+        .then(() => {
+            console.log(item);
+            messageStore.deleteMessage({ mid: item.mid });
+            messageStore.queryMessage();
+        })
+        .catch(() => {
+            console.log("取消");
+        });
+};
 
 // 监听分页变化
-watch(() => pageNumber.value, () => {
-    hideOverflow(600)
-})
+watch(
+    () => pageNumber.value,
+    () => {
+        hideOverflow(600);
+    },
+);
 
 // 监听搜索关键词变化，重置分页
-watch(() => searchKeyword.value, () => {
-    if (pageNumber.value > total.value) {
-        pageNumber.value = 1
-    }
-})
+watch(
+    () => searchKeyword.value,
+    () => {
+        if (pageNumber.value > total.value) {
+            pageNumber.value = 1;
+        }
+    },
+);
 </script>
 
 <style scoped>
@@ -241,7 +249,11 @@ watch(() => searchKeyword.value, () => {
     }
 
     .pagination {
-        @apply flex-col gap-2 mt-3 pt-3;
+        @apply flex flex-col gap-2 mt-3 pt-3;
+    }
+
+    button {
+        margin: 0 !important;
     }
 
     .page-info {

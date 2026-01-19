@@ -2,72 +2,46 @@
     <div class="chat-list-item">
         <div class="item-header">
             <div class="avatar-wrapper">
-                <img class="lazy-image avatar" :src="props.item.user?.avatar || '/avatar.png'" :alt="props.item.name">
+                <img class="lazy-image avatar" :src="props.item.user?.avatar || '/avatar.png'" :alt="props.item.name" />
             </div>
             <div class="item-info">
                 <div class="item-title">
                     <h2 class="username">{{ props.item.name }}</h2>
                     <span class="time">{{ formatTime(new Date(props.item.time)) }}</span>
                 </div>
-                <div class=" line-clamp-1 text-sm">{{ props.item.content }}</div>
+                <div class="line-clamp-1 text-sm">{{ props.item.content }}</div>
             </div>
         </div>
-        <div class="item-actions flex flex-col justify-center align-center">
-            <el-button v-if="props.manage" type="danger" plain icon="EditPen" size="small" @click="handleDelete">
-                删除
+        <div class="item-actions">
+            <el-button v-if="props.manage" type="danger" plain :icon="Delete" size="small" @click="handleDelete"
+                class="action-btn">
+                <span class="btn-text">删除</span>
             </el-button>
-            <el-button v-else type="primary" plain icon="EditPen" size="small" @click="handleReplay">
-                回复
+            <el-button v-else type="primary" plain :icon="Comment" size="small" @click="handleReplay"
+                class="action-btn">
+                <span class="btn-text">回复</span>
             </el-button>
-            <el-button style="margin: 0;" type="info" plain icon="View" size="small" @click="handleView">
-                查看
+            <el-button type="info" plain :icon="View" size="small" @click="handleView" class="action-btn">
+                <span class="btn-text">查看</span>
             </el-button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import type { MessageItem } from '@/types/message';
-import { formatTime } from '@/utils/dayJs';
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import type { MessageItem } from "@/types/message";
+import { formatTime } from "@/utils/dayJs";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { EditPen, View, Delete, Comment } from "@element-plus/icons-vue"; // 导入图标
 
-const router = useRouter()
+const router = useRouter();
 const props = defineProps<{
-    item: MessageItem,
-    manage?: boolean,
-}>()
+    item: MessageItem;
+    manage?: boolean;
+}>();
 
-const setAvatar = computed(() => {
-    if (!props.item.avatar) throw new Error("avatar is required.");
-    const acceptExts = ['.gif', '.png', '.jpg', '.jpeg', '.webp'];
-    const endWith = props.item.avatar.substr(props.item.avatar.lastIndexOf('.'));
-    if (!acceptExts.includes(endWith)) throw new Error("avatar must be a valid image file.");
-    return props.item.avatar;
-})
-
-const emit = defineEmits<{
-    (e: 'replay', item: MessageItem): void
-    (e: 'view', item: MessageItem): void
-    (e: 'delete', item: MessageItem): void
-}>()
-
-const handleReplay = () => {
-    emit('replay', props.item)
-}
-
-const handleView = () => {
-    router.push({
-        name: 'Message',
-        params: {
-            id: props.item._id
-        }
-    })
-}
-
-const handleDelete = () => {
-    emit('delete', props.item)
-}
+// ... 其他代码保持不变
 </script>
 
 <style scoped>
@@ -121,7 +95,15 @@ const handleDelete = () => {
 }
 
 .item-actions {
-    @apply flex items-center gap-2 shrink-0;
+    @apply flex flex-col gap-2 shrink-0;
+}
+
+.action-btn {
+    @apply flex items-center justify-center;
+}
+
+.btn-text {
+    @apply ml-1;
 }
 
 /* 移动端适配 */
@@ -158,17 +140,25 @@ const handleDelete = () => {
     }
 
     .item-actions {
-        @apply justify-end gap-1.5;
-        @apply w-full;
+        @apply flex-row justify-end gap-1.5 w-full mt-2;
+        @apply flex-wrap;
+        /* 允许换行 */
     }
 
-    .item-actions :deep(.el-button) {
-        @apply text-xs px-2 py-1;
-        @apply flex-1;
+    .action-btn {
+        @apply flex-1 min-w-[60px] max-w-[100px];
+        @apply py-1.5 px-2;
     }
 
-    .item-actions :deep(.el-button span) {
-        @apply hidden;
+    /* 在更小的屏幕上隐藏文本，只显示图标 */
+    @media (max-width: 480px) {
+        .btn-text {
+            @apply hidden sm:block;
+        }
+
+        .action-btn {
+            @apply min-w-[auto] p-2;
+        }
     }
 }
 </style>

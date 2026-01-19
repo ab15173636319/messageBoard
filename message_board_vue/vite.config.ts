@@ -13,6 +13,25 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    minify: true,
+    rollupOptions: {
+      output: {
+        chunkFileNames: "JS/[name]-[hash].js",
+        entryFileNames: "JS/[name]-[hash].js",
+        assetFileNames: "[name]-[hash].[ext]",
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
+          }
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       "/api": {
