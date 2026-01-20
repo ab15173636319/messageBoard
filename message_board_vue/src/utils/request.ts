@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/modules/user";
 
 const instance = axios.create({
   baseURL: "https://napi.luizhen.xyz",
-  timeout: 10000,
+  timeout: 100000,
 });
 
 instance.interceptors.request.use(
@@ -15,7 +15,7 @@ instance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 instance.interceptors.response.use(
@@ -39,23 +39,28 @@ instance.interceptors.response.use(
         break;
     }
     return Promise.reject(err);
-  }
+  },
 );
 
 const get = (
   url: string,
   params?: Record<string, any>,
-  onProgress?: (progress: number) => void
+  option?: Record<string, any>,
+  onProgress?: (progress: number) => void,
 ) => {
   return instance.get(url, {
     params,
     onDownloadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {
         const progress = Math.round(
-          (progressEvent.loaded / progressEvent.total) * 100
+          (progressEvent.loaded / progressEvent.total) * 100,
         );
         onProgress(progress);
       }
+    },
+    headers: {
+      "Content-Type": "application/json",
+      ...option,
     },
   });
 };
@@ -63,16 +68,18 @@ const get = (
 const post = (
   url: string,
   data?: Record<string, any>,
-  onProgress?: (progress: number) => void
+  option: Record<string, any> = {},
+  onProgress?: (progress: number) => void,
 ) => {
   return instance.post(url, data, {
     headers: {
       "Content-Type": "application/json",
+      ...option,
     },
     onDownloadProgress: (progressEvent) => {
       if (onProgress && progressEvent.total) {
         const progress = Math.round(
-          (progressEvent.loaded / progressEvent.total) * 100
+          (progressEvent.loaded / progressEvent.total) * 100,
         );
         onProgress(progress);
       }

@@ -17,9 +17,9 @@ export default defineConfig({
     minify: true,
     rollupOptions: {
       output: {
-        chunkFileNames: "JS/[name]-[hash].js",
-        entryFileNames: "JS/[name]-[hash].js",
-        assetFileNames: "[name]-[hash].[ext]",
+        chunkFileNames: "assets/JS/[name]-[hash].js",
+        entryFileNames: "assets/JS/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash].[ext]",
         manualChunks(id) {
           if (id.includes("node_modules")) {
             return id
@@ -35,7 +35,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3000",
+        target: "https://napi.luizhen.xyz",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
