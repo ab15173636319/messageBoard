@@ -3,6 +3,7 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import type { aspectRatio } from ".";
 
 const props = defineProps<{
     src: string;
@@ -11,7 +12,7 @@ const props = defineProps<{
     height?: number | string;
     delay?: number | string;
     timeout?: number | string;
-    aspectRatio?: number;
+    aspectRatio?: aspectRatio;
 }>();
 
 const timeoutSet = computed(() => {
@@ -47,16 +48,38 @@ const loadImage = (src: string) => {
         }, delayTime.value);
     });
 };
+
 await loadImage(props.src);
 
+const arComputed = computed((): number => {
+    if (!props.aspectRatio) return 0;
+    const [width, height] = props.aspectRatio?.split(":").map(Number);
+    return width! / height!;
+});
+
 const setWidth = computed(() => {
-    let width = props.width || props.size + "px" || "100px";
-    return width;
+    let width = Number(props.width) || Number(props.size) || 100;
+    let height = Number(props.height) || Number(props.size);
+    console.log(props.aspectRatio, arComputed.value, height);
+
+    if (props.aspectRatio && arComputed.value && height) {
+        width = height / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
+
+    return width + "px";
 });
 
 const setHeight = computed(() => {
-    let height = props.height || props.size + "px" || "100px";
-    return height;
+    let width = Number(props.width) || Number(props.size);
+    let height = props.height || Number(props.size) || 100;
+    if (props.aspectRatio && arComputed.value && width) {
+        height = width / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
+    return height + "px";
 });
 </script>
 <style scoped>

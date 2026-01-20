@@ -8,7 +8,7 @@
             <div class="avatar-upload">
                 <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeUpload">
                     <!-- <el-avatar v-if="avatarUrl" :size="120" :src="avatarUrl" /> -->
-                    <LazyImage v-if="avatarUrl" :src="avatarUrl" delay="1s" />
+                    <LazyImage v-if="avatarUrl" :src="avatarUrl" height="500" aspect-ratio="1:1" delay="1s" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
                     </el-icon>
@@ -36,7 +36,7 @@ import { Plus } from "@element-plus/icons-vue";
 import { useUserStore } from "@/stores/modules/user";
 import { useFileStore } from "@/stores/modules/file";
 import randomName from "@/utils/randomName";
-import LazyImage from "@/components/layout/lazyImage.vue";
+import LazyImage from "@/components/Image/lazyImage.vue";
 const userStore = useUserStore();
 const fileStore = useFileStore();
 const avatarUrl = ref(userStore.userInfo?.avatar || "");

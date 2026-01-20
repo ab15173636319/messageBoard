@@ -3,7 +3,7 @@
         <Suspense>
             <template #default>
                 <div class="image">
-                    <Image v-bind="{ ...props }" :src="cache"></Image>
+                    <Image v-bind="{ ...props }"></Image>
                 </div>
             </template>
             <template #fallback>
@@ -15,7 +15,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import Image from "../base/Image.vue";
+import Image from "./Image.vue";
+import type { aspectRatio } from ".";
 
 const props = defineProps<{
     src: string;
@@ -24,35 +25,67 @@ const props = defineProps<{
     height?: string | number;
     delay?: number | string;
     timeout?: number | string;
-    aspectRatio?: number;
+    aspectRatio?: aspectRatio;
 }>();
 
-const cache = computed(() => props.src);
+const arComputed = computed((): number => {
+    if (!props.aspectRatio) return 0;
+    const [width, height] = props.aspectRatio?.split(":").map(Number);
+    return width! / height!;
+});
 
 const setWidth = computed(() => {
-    let width = props.width || Number(props.size) || 100;
-    console.log(width);
+    let width = Number(props.width) || Number(props.size) || 100;
+    let height = Number(props.height) || Number(props.size);
+    if (props.aspectRatio && arComputed.value && height) {
+        width = height / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
     return width + "px";
 });
 
 const setHeight = computed(() => {
+    let width = Number(props.width) || Number(props.size);
     let height = props.height || Number(props.size) || 100;
+    if (props.aspectRatio && arComputed.value && width) {
+        height = width / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
     return height + "px";
 });
 
 const setSeletonWidth = computed(() => {
     let width = Number(props.width) || Number(props.size) || 100;
-
+    let height = Number(props.height) || Number(props.size);
+    if (props.aspectRatio && arComputed.value && props.height) {
+        width = height / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
     return width * 0.3 + "px";
 });
 
 const setSeletonRight = computed(() => {
     let width = Number(props.width) || Number(props.size) || 100;
+    let height = props.height || Number(props.size);
+    if (props.aspectRatio && arComputed.value && height) {
+        height = width / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
     return -width * 0.3 + "px";
 });
 
 const setSeletonAfterRight = computed(() => {
     let width = Number(props.width) || Number(props.size) || 100;
+    let height = Number(props.height) || Number(props.size);
+    if (props.aspectRatio && arComputed.value && height) {
+        width = height / arComputed.value;
+    } else {
+        throw new Error("设置比列前必须先设置宽或高");
+    }
     return width + width * 0.3 + "px";
 });
 </script>
