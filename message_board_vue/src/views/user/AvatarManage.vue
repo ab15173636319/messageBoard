@@ -8,7 +8,7 @@
             <div class="avatar-upload">
                 <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeUpload">
                     <!-- <el-avatar v-if="avatarUrl" :size="120" :src="avatarUrl" /> -->
-                    <LazyImage v-if="avatarUrl" :src="avatarUrl" height="500" aspect-ratio="1:1" delay="1s" />
+                    <LazyImage v-if="avatarUrl" :src="avatarUrl" height="100" aspect-ratio="1:1" delay="1s" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
                     </el-icon>
@@ -125,7 +125,7 @@ const handleSave = async () => {
 }
 
 .avatar-uploader {
-    @apply border-2 border-dashed border-gray-300 rounded-full p-4 cursor-pointer;
+    @apply border-2 border-dashed border-gray-300 rounded-full p-4 cursor-pointer flex justify-center items-center;
     @apply hover:border-blue-500 transition-colors;
 }
 
