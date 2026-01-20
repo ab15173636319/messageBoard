@@ -21,20 +21,26 @@
                 <div v-for="user in paginatedUsers" :key="user.uid" class="user-card">
                     <div class="user-header">
                         <div class="user-info">
-                            <img class="lazy-image user-avatar" :src="user.avatar || '/avatar.png'"
+                            <img class="lazy-image user-avatar" :src="user.avatar || '/avatar.svg'"
                                 :alt="user.nickname || user.username" />
                             <div class="user-details">
                                 <div class="user-name-row">
-                                    <span class="user-name">{{ user.nickname || user.username }}</span>
+                                    <span class="user-name">{{
+                                        user.nickname || user.username
+                                        }}</span>
                                     <el-tag v-if="user.role === 'admin'" type="danger" size="small">管理员</el-tag>
                                     <el-tag v-else type="info" size="small">普通用户</el-tag>
                                 </div>
                                 <div class="user-meta">
                                     <span class="user-username">用户名：{{ user.username }}</span>
                                     <span v-if="user.email" class="user-email">邮箱：{{ user.email }}</span>
-                                    <span class="user-time">注册时间：{{ formatTime(new Date(user.create_time ||
-                                        user.create_time ||
-                                        Date.now())) }}</span>
+                                    <span class="user-time">注册时间：{{
+                                        formatTime(
+                                            new Date(
+                                                user.create_time || user.create_time || Date.now(),
+                                        ),
+                                        )
+                                        }}</span>
                                 </div>
                             </div>
                         </div>
@@ -55,7 +61,9 @@
                 <el-icon class="empty-icon">
                     <UserFilled />
                 </el-icon>
-                <p class="empty-text">{{ searchKeyword ? '未找到相关用户' : '暂无用户' }}</p>
+                <p class="empty-text">
+                    {{ searchKeyword ? "未找到相关用户" : "暂无用户" }}
+                </p>
             </div>
 
             <!-- 分页 -->
@@ -101,112 +109,116 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Edit, Delete, Search, UserFilled } from '@element-plus/icons-vue'
-import { get } from '@/utils/request'
-import type { UserInfo } from '@/types/user'
-import { formatTime } from '@/utils/dayJs'
+import { ref, computed, onMounted } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { Edit, Delete, Search, UserFilled } from "@element-plus/icons-vue";
+import { get } from "@/utils/request";
+import type { UserInfo } from "@/types/user";
+import { formatTime } from "@/utils/dayJs";
 
-const loading = ref(false)
-const saving = ref(false)
-const users = ref<UserInfo[]>([])
-const searchKeyword = ref('')
-const currentPage = ref(1)
-const pageSize = ref(10)
-const editDialogVisible = ref(false)
-const editingUser = ref<Partial<UserInfo>>({})
+const loading = ref(false);
+const saving = ref(false);
+const users = ref<UserInfo[]>([]);
+const searchKeyword = ref("");
+const currentPage = ref(1);
+const pageSize = ref(10);
+const editDialogVisible = ref(false);
+const editingUser = ref<Partial<UserInfo>>({});
 
 // 加载所有用户
 const loadUsers = async () => {
-    loading.value = true
+    loading.value = true;
     try {
-        const res = await get('/user/queryUser')
+        const res = await get("/user/queryUser");
         // @ts-ignore
         if (res.code === 200) {
-            users.value = res.data || []
+            users.value = res.data || [];
         } else {
             // @ts-ignore
-            ElMessage.error(res.message || '加载用户失败')
+            ElMessage.error(res.message || "加载用户失败");
         }
     } catch (error) {
-        console.error('加载用户失败:', error)
-        ElMessage.error('加载用户失败')
+        console.error("加载用户失败:", error);
+        ElMessage.error("加载用户失败");
     } finally {
-        loading.value = false
+        loading.value = false;
     }
-}
+};
 
 // 过滤后的用户列表
 const filteredUsers = computed(() => {
     if (!searchKeyword.value.trim()) {
-        return users.value
+        return users.value;
     }
-    const keyword = searchKeyword.value.trim().toLowerCase()
+    const keyword = searchKeyword.value.trim().toLowerCase();
     return users.value.filter((user) => {
-        const usernameMatch = user.username.toLowerCase().includes(keyword)
-        const nicknameMatch = (user.nickname || '').toLowerCase().includes(keyword)
-        const emailMatch = (user.email || '').toLowerCase().includes(keyword)
-        return usernameMatch || nicknameMatch || emailMatch
-    })
-})
+        const usernameMatch = user.username.toLowerCase().includes(keyword);
+        const nicknameMatch = (user.nickname || "").toLowerCase().includes(keyword);
+        const emailMatch = (user.email || "").toLowerCase().includes(keyword);
+        return usernameMatch || nicknameMatch || emailMatch;
+    });
+});
 
 // 分页后的用户列表
 const totalPages = computed(() => {
-    return Math.ceil(filteredUsers.value.length / pageSize.value) || 1
-})
+    return Math.ceil(filteredUsers.value.length / pageSize.value) || 1;
+});
 
 const paginatedUsers = computed(() => {
-    const start = (currentPage.value - 1) * pageSize.value
-    const end = start + pageSize.value
-    return filteredUsers.value.slice(start, end)
-})
+    const start = (currentPage.value - 1) * pageSize.value;
+    const end = start + pageSize.value;
+    return filteredUsers.value.slice(start, end);
+});
 
 // 搜索处理
 const handleSearch = () => {
-    currentPage.value = 1
-}
+    currentPage.value = 1;
+};
 
 // 编辑用户
 const handleEditUser = (user: UserInfo) => {
-    editingUser.value = { ...user }
-    editDialogVisible.value = true
-}
+    editingUser.value = { ...user };
+    editDialogVisible.value = true;
+};
 
 // 保存用户
 const handleSaveUser = async () => {
-    saving.value = true
+    saving.value = true;
     try {
         // 这里需要调用更新用户的API（需要后端支持管理员更新用户）
-        ElMessage.warning('更新用户功能需要后端支持管理员API')
-        editDialogVisible.value = false
+        ElMessage.warning("更新用户功能需要后端支持管理员API");
+        editDialogVisible.value = false;
     } catch (error) {
-        console.error('保存用户失败:', error)
-        ElMessage.error('保存用户失败')
+        console.error("保存用户失败:", error);
+        ElMessage.error("保存用户失败");
     } finally {
-        saving.value = false
+        saving.value = false;
     }
-}
+};
 
 // 删除用户
 const handleDeleteUser = async (user: UserInfo) => {
     try {
-        await ElMessageBox.confirm(`确定要删除用户"${user.nickname || user.username}"吗？`, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        })
+        await ElMessageBox.confirm(
+            `确定要删除用户"${user.nickname || user.username}"吗？`,
+            "提示",
+            {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            },
+        );
 
         // 这里需要调用删除用户的API（需要后端支持管理员删除用户）
-        ElMessage.warning('删除用户功能需要后端支持管理员API')
+        ElMessage.warning("删除用户功能需要后端支持管理员API");
     } catch (error) {
         // 用户取消删除
     }
-}
+};
 
 onMounted(() => {
-    loadUsers()
-})
+    loadUsers();
+});
 </script>
 
 <style scoped>
