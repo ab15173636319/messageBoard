@@ -39,8 +39,6 @@ const setWidth = computed(() => {
     let height = Number(props.height) || Number(props.size);
     if (props.aspectRatio && arComputed.value && height) {
         width = height / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return width + "px";
 });
@@ -50,8 +48,6 @@ const setHeight = computed(() => {
     let height = props.height || Number(props.size) || 100;
     if (props.aspectRatio && arComputed.value && width) {
         height = width / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return height + "px";
 });
@@ -61,8 +57,6 @@ const setSeletonWidth = computed(() => {
     let height = Number(props.height) || Number(props.size);
     if (props.aspectRatio && arComputed.value && props.height) {
         width = height / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return width * 0.3 + "px";
 });
@@ -72,8 +66,6 @@ const setSeletonRight = computed(() => {
     let height = props.height || Number(props.size);
     if (props.aspectRatio && arComputed.value && height) {
         height = width / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return -width * 0.3 + "px";
 });
@@ -83,8 +75,6 @@ const setSeletonAfterRight = computed(() => {
     let height = Number(props.height) || Number(props.size);
     if (props.aspectRatio && arComputed.value && height) {
         width = height / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return width + width * 0.3 + "px";
 });

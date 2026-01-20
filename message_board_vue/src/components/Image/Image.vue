@@ -64,8 +64,6 @@ const setWidth = computed(() => {
 
     if (props.aspectRatio && arComputed.value && height) {
         width = height / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
 
     return width + "px";
@@ -76,8 +74,6 @@ const setHeight = computed(() => {
     let height = props.height || Number(props.size) || 100;
     if (props.aspectRatio && arComputed.value && width) {
         height = width / arComputed.value;
-    } else {
-        throw new Error("设置比列前必须先设置宽或高");
     }
     return height + "px";
 });
