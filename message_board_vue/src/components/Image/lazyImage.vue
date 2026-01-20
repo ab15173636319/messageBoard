@@ -14,19 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, h } from "vue";
 import Image from "./Image.vue";
-import type { aspectRatio } from ".";
+import type { AspectRatio, ILazyImage } from "..";
 
-const props = defineProps<{
-    src: string;
-    size?: number | string;
-    width?: string | number;
-    height?: string | number;
-    delay?: number | string;
-    timeout?: number | string;
-    aspectRatio?: aspectRatio;
-}>();
+const props = defineProps<ILazyImage>();
 
 const arComputed = computed((): number => {
     if (!props.aspectRatio) return 0;
@@ -40,6 +32,9 @@ const setWidth = computed(() => {
     if (props.aspectRatio && arComputed.value && height) {
         width = height / arComputed.value;
     }
+    if (props.size !== undefined && props.size !== null) {
+        width = props.size;
+    }
     return width + "px";
 });
 
@@ -48,6 +43,9 @@ const setHeight = computed(() => {
     let height = props.height || Number(props.size) || 100;
     if (props.aspectRatio && arComputed.value && width) {
         height = width / arComputed.value;
+    }
+    if (props.size !== undefined && props.size !== null) {
+        height = props.size;
     }
     return height + "px";
 });
@@ -58,6 +56,9 @@ const setSeletonWidth = computed(() => {
     if (props.aspectRatio && arComputed.value && props.height) {
         width = height / arComputed.value;
     }
+    if (props.size !== undefined && props.size !== null) {
+        width = props.size;
+    }
     return width * 0.3 + "px";
 });
 
@@ -65,7 +66,10 @@ const setSeletonRight = computed(() => {
     let width = Number(props.width) || Number(props.size) || 100;
     let height = props.height || Number(props.size);
     if (props.aspectRatio && arComputed.value && height) {
-        height = width / arComputed.value;
+        width = width / arComputed.value;
+    }
+    if (props.size !== undefined && props.size !== null) {
+        width = props.size;
     }
     return -width * 0.3 + "px";
 });
@@ -78,11 +82,24 @@ const setSeletonAfterRight = computed(() => {
     }
     return width + width * 0.3 + "px";
 });
+
+const rounded = computed(() => {
+    switch (props.shape) {
+        case "circle":
+            return "50%";
+        case "square":
+            return "0";
+        case "roundRect":
+            return "10px";
+        default:
+            return "10px";
+    }
+});
 </script>
 
 <style scoped>
 .image {
-    border-radius: 10px;
+    border-radius: v-bind(rounded);
     overflow: hidden;
 }
 

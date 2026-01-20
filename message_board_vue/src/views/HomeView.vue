@@ -2,12 +2,11 @@
     <div class="home-view">
         <div class="content-wrapper">
             <div class="chat-section h-auto border-2 border-gray-200 rounded-lg p-4 shadow-xl">
-
                 <div class="flex justify-center items-center">
-                    <div
-                        class=" w-40 h-40 flex justify-center items-center rounded-full shadow-lg shadow-cyan-500/50 mb-10">
-                        <img class="lazy-image w-40 h-40 rounded-full object-cover"
-                            :src="userStore.userInfo?.avatar || '/avatar.png'" alt="">
+                    <div class="flex justify-center items-center rounded-full shadow-lg shadow-cyan-500/50 mb-10">
+                        <LazyImage :src="userStore.userInfo?.avatar || '/avatar.svg'" :width="200" shape="circle"
+                            aspect-ratio="1:1">
+                        </LazyImage>
                     </div>
                 </div>
 
@@ -35,53 +34,50 @@
 </template>
 
 <script setup lang="ts">
-import Chat from '@/components/layout/Chat.vue';
-import ChatList from '@/components/layout/ChatList.vue';
-import { onMounted, ref } from 'vue';
-import { useMessageStore } from '@/stores/modules/message';
-import { useUserStore } from '@/stores/modules/user';
-import { ElNotification, type FormInstance } from 'element-plus';
-import type { QueryMessageParams } from '@/types/message';
-import type { ChatItem } from '@/types/chat';
-import { storeToRefs } from 'pinia';
+import Chat from "@/components/layout/Chat.vue";
+import ChatList from "@/components/layout/ChatList.vue";
+import { onMounted, ref } from "vue";
+import { useMessageStore } from "@/stores/modules/message";
+import { useUserStore } from "@/stores/modules/user";
+import { ElNotification, type FormInstance } from "element-plus";
+import type { QueryMessageParams } from "@/types/message";
+import type { ChatItem } from "@/types/chat";
+import { storeToRefs } from "pinia";
+import LazyImage from "@/components/Image/lazyImage.vue";
 
 const messageStore = useMessageStore();
 const userStore = useUserStore();
-const messageFormRef = ref<FormInstance>()
+const messageFormRef = ref<FormInstance>();
 const messageForm = ref({
-    content: '',
-    name: ''
-})
+    content: "",
+    name: "",
+});
 const query = ref<QueryMessageParams>({
     queryByUid: false,
-})
+});
 const rules = {
-    name: [
-        { required: true, message: '请输入标题', trigger: 'blur' }
-    ],
-    content: [
-        { required: true, message: '请输入内容', trigger: 'blur' }
-    ]
-}
+    name: [{ required: true, message: "请输入标题", trigger: "blur" }],
+    content: [{ required: true, message: "请输入内容", trigger: "blur" }],
+};
 const handleSend = async () => {
     messageFormRef.value?.validate(async (valid) => {
         if (valid) {
             await messageStore.sendMessage({
                 content: messageForm.value.content,
-                name: messageForm.value.name
-            })
+                name: messageForm.value.name,
+            });
             // 发送成功后清空表单
-            messageForm.value.content = ''
-            messageForm.value.name = ''
-            messageFormRef.value?.resetFields()
+            messageForm.value.content = "";
+            messageForm.value.name = "";
+            messageFormRef.value?.resetFields();
         }
-    })
-}
+    });
+};
 
 // 初始化时查询消息列表
 onMounted(() => {
-    messageStore.queryMessage()
-})
+    messageStore.queryMessage();
+});
 </script>
 
 <style scoped>

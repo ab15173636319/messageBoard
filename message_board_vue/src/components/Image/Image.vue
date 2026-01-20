@@ -1,19 +1,15 @@
 <template>
-    <img :style="{ '--width': setWidth, '--height': setHeight }" :src="src" alt="" />
+    <img :style="{
+        '--width': setWidth,
+        '--height': setHeight,
+        'border-radius': rounded,
+    }" :src="src" alt="" />
 </template>
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import type { aspectRatio } from ".";
+import type { AspectRatio, ILazyImage } from "..";
 
-const props = defineProps<{
-    src: string;
-    size?: number | string;
-    width?: number | string;
-    height?: number | string;
-    delay?: number | string;
-    timeout?: number | string;
-    aspectRatio?: aspectRatio;
-}>();
+const props = defineProps<ILazyImage>();
 
 const timeoutSet = computed(() => {
     let time = Number(props.timeout) || 5;
@@ -60,12 +56,10 @@ const arComputed = computed((): number => {
 const setWidth = computed(() => {
     let width = Number(props.width) || Number(props.size) || 100;
     let height = Number(props.height) || Number(props.size);
-    console.log(props.aspectRatio, arComputed.value, height);
 
     if (props.aspectRatio && arComputed.value && height) {
         width = height / arComputed.value;
     }
-
     return width + "px";
 });
 
@@ -76,6 +70,19 @@ const setHeight = computed(() => {
         height = width / arComputed.value;
     }
     return height + "px";
+});
+
+const rounded = computed(() => {
+    switch (props.shape) {
+        case "circle":
+            return "50%";
+        case "square":
+            return "0";
+        case "roundRect":
+            return "10px";
+        default:
+            return "10px";
+    }
 });
 </script>
 <style scoped>

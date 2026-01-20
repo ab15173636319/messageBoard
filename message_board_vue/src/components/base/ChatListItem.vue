@@ -2,7 +2,8 @@
     <div class="chat-list-item">
         <div class="item-header">
             <div class="avatar-wrapper">
-                <img class="lazy-image avatar" :src="props.item.user?.avatar || '/avatar.svg'" :alt="props.item.name" />
+                <lazy-image :width="70" aspect-ratio="1:1" :delay="0.5" :src="props.item.user?.avatar || '/avatar.svg'"
+                    alt="props.item.name" />
             </div>
             <div class="item-info">
                 <div class="item-title">
@@ -31,6 +32,7 @@ import type { MessageItem } from "@/types/message";
 import { formatTime } from "@/utils/dayJs";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import LazyImage from "../Image/lazyImage.vue";
 
 const router = useRouter();
 const props = defineProps<{

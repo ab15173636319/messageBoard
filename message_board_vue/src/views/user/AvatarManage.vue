@@ -8,7 +8,8 @@
             <div class="avatar-upload">
                 <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeUpload">
                     <!-- <el-avatar v-if="avatarUrl" :size="120" :src="avatarUrl" /> -->
-                    <LazyImage v-if="avatarUrl" :src="avatarUrl" height="100" aspect-ratio="1:1" delay="1s" />
+                    <LazyImage v-if="avatarUrl" :src="avatarUrl" :height="100" shape="circle" aspect-ratio="1:1"
+                        :delay="1" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
                     </el-icon>
