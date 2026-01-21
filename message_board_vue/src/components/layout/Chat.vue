@@ -1,164 +1,210 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
-import { emoji, emojiCategories } from '@/config/emoji'
+import {
+    ref,
+    watch,
+    onMounted,
+    onBeforeUnmount,
+    nextTick,
+    computed,
+} from "vue";
+import { emoji, emojiCategories } from "@/config/emoji";
 
 interface Props {
-    modelValue?: string
-    placeholder?: string
-    minHeight?: string
-    maxHeight?: string
+    modelValue?: string;
+    placeholder?: string;
+    minHeight?: string;
+    maxHeight?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: '',
-    placeholder: '请输入内容...',
-    minHeight: '120px',
-    maxHeight: 'auto'
-})
+    modelValue: "",
+    placeholder: "请输入内容...",
+    minHeight: "120px",
+    maxHeight: "auto",
+});
 
 const emit = defineEmits<{
-    'update:modelValue': [value: string]
-}>()
+    "update:modelValue": [value: string];
+}>();
 
-const editorRef = ref<HTMLDivElement | null>(null)
-const isComposing = ref(false)
-const isEmpty = ref(true)
-const showEmojiPanel = ref(false)
-const activeEmojiTab = ref<'happy' | 'sad' | 'angry' | 'surprised' | 'other'>('happy')
+const editorRef = ref<HTMLDivElement | null>(null);
+const isComposing = ref(false);
+const isEmpty = ref(true);
+const showEmojiPanel = ref(false);
+const activeEmojiTab = ref<"happy" | "sad" | "angry" | "surprised" | "other">(
+    "happy",
+);
 
 // 表情分类标签
 const emojiTabs = [
-    { key: 'happy' as const, label: '开心', icon: '😊' },
-    { key: 'sad' as const, label: '难过', icon: '😢' },
-    { key: 'angry' as const, label: '生气', icon: '😠' },
-    { key: 'surprised' as const, label: '惊讶', icon: '😲' },
-    { key: 'other' as const, label: '其他', icon: '😎' },
-]
+    { key: "happy" as const, label: "开心", icon: "😊" },
+    { key: "sad" as const, label: "难过", icon: "😢" },
+    { key: "angry" as const, label: "生气", icon: "😠" },
+    { key: "surprised" as const, label: "惊讶", icon: "😲" },
+    { key: "other" as const, label: "其他", icon: "😎" },
+];
 
 // 当前分类的表情列表
 const currentEmojis = computed(() => {
-    return emojiCategories[activeEmojiTab.value] || []
-})
+    return emojiCategories[activeEmojiTab.value] || [];
+});
 
 // 更新内容
 const updateContent = () => {
-    if (!editorRef.value || isComposing.value) return
+    if (!editorRef.value || isComposing.value) return;
 
-    const content = editorRef.value.innerHTML
-    const text = editorRef.value.innerText || editorRef.value.textContent || ''
-    isEmpty.value = !text.trim()
-    emit('update:modelValue', content)
-}
+    const content = editorRef.value.innerHTML;
+    const text = editorRef.value.innerText || editorRef.value.textContent || "";
+    isEmpty.value = !text.trim();
+    emit("update:modelValue", content);
+};
 
 // 格式化命令
 const execCommand = (command: string, value?: string) => {
-    document.execCommand(command, false, value)
-    editorRef.value?.focus()
-    updateContent()
-}
+    document.execCommand(command, false, value);
+    editorRef.value?.focus();
+    updateContent();
+};
 
 // 插入文本
 const insertText = (text: string) => {
-    if (!editorRef.value) return
+    if (!editorRef.value) return;
 
-    const selection = window.getSelection()
-    if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0)
-        range.deleteContents()
-        const textNode = document.createTextNode(text)
-        range.insertNode(textNode)
-        range.setStartAfter(textNode)
-        range.collapse(true)
-        selection.removeAllRanges()
-        selection.addRange(range)
-    } else {
-        // 如果没有选中区域，在末尾插入
-        editorRef.value.appendChild(document.createTextNode(text))
-    }
+    // 强制将焦点设置到编辑区域
+    editorRef.value.focus();
 
-    updateContent()
-    editorRef.value.focus()
-}
+    // 稍等片刻确保焦点已切换
+    nextTick(() => {
+        if (!editorRef.value) return;
+
+        const selection = window.getSelection();
+        let range: Range;
+
+        if (selection && selection.rangeCount > 0) {
+            range = selection.getRangeAt(0);
+
+            // 检查选择范围是否在编辑区域内
+            const isInEditor = editorRef.value.contains(
+                range.commonAncestorContainer,
+            );
+
+            if (!isInEditor) {
+                // 如果不在编辑区域内，创建新的范围到编辑区域末尾
+                range = document.createRange();
+                range.selectNodeContents(editorRef.value);
+                range.collapse(false);
+            }
+        } else {
+            // 如果没有选择，创建范围到编辑区域末尾
+            range = document.createRange();
+            range.selectNodeContents(editorRef.value);
+            range.collapse(false);
+        }
+
+        // 插入文本
+        range.deleteContents();
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+
+        // 将光标移动到插入的文本之后
+        range.setStartAfter(textNode);
+        range.collapse(true);
+
+        // 更新选择
+        if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        updateContent();
+        editorRef.value.focus();
+    });
+};
 
 // 插入表情
 const insertEmoji = (emojiText: string) => {
-    insertText(emojiText)
-    showEmojiPanel.value = false
-}
+    insertText(emojiText);
+    showEmojiPanel.value = false;
+};
 
 // 切换表情面板
 const toggleEmojiPanel = () => {
-    showEmojiPanel.value = !showEmojiPanel.value
-}
+    showEmojiPanel.value = !showEmojiPanel.value;
+};
 
 // 切换表情分类
 const switchEmojiTab = (tab: typeof activeEmojiTab.value) => {
-    activeEmojiTab.value = tab
-}
+    activeEmojiTab.value = tab;
+};
 
 // 点击外部关闭表情面板
 const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement
-    if (!target.closest('.emoji-panel') && !target.closest('.emoji-btn')) {
-        showEmojiPanel.value = false
+    const target = event.target as HTMLElement;
+    if (!target.closest(".emoji-panel") && !target.closest(".emoji-btn")) {
+        showEmojiPanel.value = false;
     }
-}
+};
 
 // 监听外部值变化
-watch(() => props.modelValue, (newValue) => {
-    if (editorRef.value && editorRef.value.innerHTML !== newValue) {
-        editorRef.value.innerHTML = newValue || ''
-        const text = editorRef.value.innerText || editorRef.value.textContent || ''
-        isEmpty.value = !text.trim()
-    }
-}, { immediate: true })
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (editorRef.value && editorRef.value.innerHTML !== newValue) {
+            editorRef.value.innerHTML = newValue || "";
+            const text =
+                editorRef.value.innerText || editorRef.value.textContent || "";
+            isEmpty.value = !text.trim();
+        }
+    },
+    { immediate: true },
+);
 
 // 处理输入事件
 const handleInput = () => {
     if (!isComposing.value) {
-        updateContent()
+        updateContent();
     }
-}
+};
 
 // 处理组合输入（中文输入法）
 const handleCompositionStart = () => {
-    isComposing.value = true
-}
+    isComposing.value = true;
+};
 
 const handleCompositionEnd = () => {
-    isComposing.value = false
+    isComposing.value = false;
     nextTick(() => {
-        updateContent()
-    })
-}
+        updateContent();
+    });
+};
 
 // 处理粘贴事件，清理格式
 const handlePaste = (e: ClipboardEvent) => {
-    e.preventDefault()
-    const text = e.clipboardData?.getData('text/plain') || ''
-    insertText(text)
-}
+    e.preventDefault();
+    const text = e.clipboardData?.getData("text/plain") || "";
+    insertText(text);
+};
 
 // 获取纯文本内容
 const getPlainText = (): string => {
-    if (!editorRef.value) return ''
-    return editorRef.value.innerText || editorRef.value.textContent || ''
-}
+    if (!editorRef.value) return "";
+    return editorRef.value.innerText || editorRef.value.textContent || "";
+};
 
 // 获取HTML内容
 const getHTML = (): string => {
-    if (!editorRef.value) return ''
-    return editorRef.value.innerHTML
-}
+    if (!editorRef.value) return "";
+    return editorRef.value.innerHTML;
+};
 
 // 清空内容
 const clear = () => {
     if (editorRef.value) {
-        editorRef.value.innerHTML = ''
-        isEmpty.value = true
-        updateContent()
+        editorRef.value.innerHTML = "";
+        isEmpty.value = true;
+        updateContent();
     }
-}
+};
 
 // 暴露方法给父组件
 defineExpose({
@@ -166,24 +212,24 @@ defineExpose({
     getPlainText,
     getHTML,
     focus: () => editorRef.value?.focus(),
-    blur: () => editorRef.value?.blur()
-})
+    blur: () => editorRef.value?.blur(),
+});
 
 onMounted(() => {
     if (editorRef.value) {
-        editorRef.value.innerHTML = props.modelValue || ''
-        const text = editorRef.value.innerText || editorRef.value.textContent || ''
-        isEmpty.value = !text.trim()
+        editorRef.value.innerHTML = props.modelValue || "";
+        const text = editorRef.value.innerText || editorRef.value.textContent || "";
+        isEmpty.value = !text.trim();
     }
 
     // 监听点击外部关闭表情面板
-    document.addEventListener('click', handleClickOutside)
-})
+    document.addEventListener("click", handleClickOutside);
+});
 
 // 组件卸载时移除事件监听
 onBeforeUnmount(() => {
-    document.removeEventListener('click', handleClickOutside)
-})
+    document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -249,7 +295,7 @@ onBeforeUnmount(() => {
         <div ref="editorRef" class="editor-content" :class="{ 'is-empty': isEmpty }" contenteditable="true"
             :data-placeholder="placeholder" :style="{
                 minHeight: minHeight,
-                maxHeight: maxHeight
+                maxHeight: maxHeight,
             }" @input="handleInput" @paste="handlePaste" @compositionstart="handleCompositionStart"
             @compositionend="handleCompositionEnd"></div>
 
