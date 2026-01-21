@@ -56,8 +56,12 @@ const query = ref<QueryMessageParams>({
     queryByUid: false,
 });
 const rules = {
-    name: [{ required: true, message: "请输入标题", trigger: "blur" }],
-    content: [{ required: true, message: "请输入内容", trigger: "blur" }],
+    name: [
+        { required: true, message: "请输入标题", trigger: ["blur", "change"] },
+    ],
+    content: [
+        { required: true, message: "请输入内容", trigger: ["blur", "change"] },
+    ],
 };
 const handleSend = async () => {
     messageFormRef.value?.validate(async (valid) => {

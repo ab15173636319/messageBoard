@@ -9,19 +9,14 @@
       </div>
 
       <!-- 主留言卡片 -->
-      <div
-        v-if="currentMessage"
-        class="message-card"
-        v-loading="messageStore.loading"
-      >
+      <div v-if="currentMessage" class="message-card" v-loading="messageStore.loading">
         <div class="message-header">
           <!-- 头像 -->
           <div class="avatar-wrapper">
-            <img
-              class="lazy-image avatar"
-              :src="currentMessage.user?.avatar || '/avatar.svg'"
-              :alt="currentMessage.name"
-            />
+            <!-- <img class="lazy-image avatar" :src="currentMessage.user?.avatar || '/avatar.svg'"
+              :alt="currentMessage.name" /> -->
+            <LazyImage :size="100" shape="circle" :src="currentMessage.user?.avatar || '/avatar.svg'"
+              :alt="currentMessage.name" />
           </div>
 
           <!-- 用户信息 -->
@@ -48,84 +43,52 @@
             </el-icon>
             <span>{{ currentMessage.likeCount || 0 }}</span>
           </div>
-          <el-button
-            :type="currentMessage?.isLiked ? 'primary' : 'default'"
-            size="small"
-            plain
-            :icon="Star"
-            @click="handleReward"
-          >
+          <el-button :type="currentMessage?.isLiked ? 'primary' : 'default'" size="small" plain :icon="Star"
+            @click="handleReward">
             {{ currentMessage?.isLiked ? "已点赞" : "点赞" }}
           </el-button>
         </div>
       </div>
 
       <!-- 回复列表 -->
-      <div
-        v-if="
-          currentMessage &&
-          currentMessage.remark &&
-          currentMessage.remark.length > 0
-        "
-        class="replies-section"
-      >
+      <div v-if="
+        currentMessage &&
+        currentMessage.remark &&
+        currentMessage.remark.length > 0
+      " class="replies-section">
         <h3 class="section-title">回复 ({{ currentMessage.remark.length }})</h3>
         <div class="replies-list">
           <TransitionGroup name="list">
-            <div
-              v-for="reply in currentMessage.remark"
-              :key="reply.rid"
-              class="reply-card"
-            >
+            <div v-for="reply in currentMessage.remark" :key="reply.rid" class="reply-card">
               <div class="reply-header">
-                <img
-                  class="reply-avatar"
-                  :src="reply.user?.avatar || '/avatar.svg'"
-                  :alt="reply.user?.nickname || reply.name"
-                />
+                <!-- <img class="reply-avatar" :src="reply.user?.avatar || '/avatar.svg'"
+                  :alt="reply.user?.nickname || reply.name" /> -->
+                <LazyImage :size="50" :delay="0.5" shape="circle" :src="reply.user?.avatar || '/avatar.svg'"
+                  :alt="reply.user?.nickname || reply.name" />
                 <div class="reply-info">
                   <span class="reply-name">{{
                     reply.user?.nickname || reply.name
-                  }}</span>
+                    }}</span>
                   <span class="reply-time">{{
                     formatTime(new Date(reply.time))
-                  }}</span>
+                    }}</span>
                 </div>
                 <div v-if="isMyRemark(reply)" class="reply-actions">
-                  <el-button
-                    v-if="editingRemarkId !== reply.rid"
-                    text
-                    type="primary"
-                    size="small"
-                    :icon="Edit"
-                    @click="startEditRemark(reply)"
-                  >
+                  <el-button v-if="editingRemarkId !== reply.rid" text type="primary" size="small" :icon="Edit"
+                    @click="startEditRemark(reply)">
                     编辑
                   </el-button>
-                  <el-button
-                    text
-                    type="danger"
-                    size="small"
-                    :icon="Delete"
-                    @click="handleDeleteRemark(reply)"
-                  >
+                  <el-button text type="danger" size="small" :icon="Delete" @click="handleDeleteRemark(reply)">
                     删除
                   </el-button>
                 </div>
               </div>
               <!-- 编辑模式 -->
               <div v-if="editingRemarkId === reply.rid" class="reply-edit">
-                <Chat
-                  v-model="editingContent"
-                  placeholder="编辑回复..."
-                  :min-height="'100px'"
-                  :max-height="'200px'"
-                />
+                <Chat v-model="editingContent" placeholder="编辑回复..." :min-height="'100px'" :max-height="'200px'" />
                 <div class="edit-actions">
                   <el-button size="small" @click="cancelEdit">取消</el-button>
-                  <el-button type="primary" size="small" @click="saveEdit"
-                    >保存</el-button
-                  >
+                  <el-button type="primary" size="small" @click="saveEdit">保存</el-button>
                 </div>
               </div>
               <!-- 显示模式 -->
@@ -136,13 +99,10 @@
       </div>
 
       <!-- 暂无回复提示 -->
-      <div
-        v-else-if="
-          currentMessage &&
-          (!currentMessage.remark || currentMessage.remark.length === 0)
-        "
-        class="empty-replies"
-      >
+      <div v-else-if="
+        currentMessage &&
+        (!currentMessage.remark || currentMessage.remark.length === 0)
+      " class="empty-replies">
         <el-icon class="empty-icon">
           <ChatLineRound />
         </el-icon>
@@ -152,20 +112,11 @@
       <!-- 回复输入框 -->
       <div class="reply-input-card">
         <h3 class="section-title">发表回复</h3>
-        <Chat
-          v-model="replyContent"
-          v-replay="isReply"
-          placeholder="写下你的回复..."
-          :min-height="'150px'"
-          :max-height="'300px'"
-        />
+        <Chat v-model="replyContent" v-replay="isReply" placeholder="写下你的回复..." :min-height="'150px'"
+          :max-height="'300px'" />
         <div class="input-actions">
           <el-button @click="clearReply">清空</el-button>
-          <el-button
-            type="primary"
-            @click="submitReply"
-            :disabled="!replyContent.trim()"
-          >
+          <el-button type="primary" @click="submitReply" :disabled="!replyContent.trim()">
             发表回复
           </el-button>
         </div>
@@ -191,6 +142,7 @@ import { useMessageStore } from "@/stores/modules/message";
 import { useUserStore } from "@/stores/modules/user";
 import type { MessageItem, RemarkItem } from "@/types/message";
 import { formatTime } from "@/utils/dayJs";
+import LazyImage from "@/components/Image/lazyImage.vue";
 
 const route = useRoute();
 const router = useRouter();

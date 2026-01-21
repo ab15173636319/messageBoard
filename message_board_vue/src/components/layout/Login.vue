@@ -1,30 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
-import type { FormInstance } from 'element-plus'
-import { useUserStore } from '@/stores/modules/user'
-import type { LoginParams } from '@/types/user'
+import { ref } from "vue";
+import { User, Lock } from "@element-plus/icons-vue";
+import type { FormInstance } from "element-plus";
+import { useUserStore } from "@/stores/modules/user";
+import type { LoginParams } from "@/types/user";
 
-
-const userStore = useUserStore()
-const loginFormRef = ref<FormInstance>()
+const userStore = useUserStore();
+const loginFormRef = ref<FormInstance>();
 const rules = {
-    username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-    password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-}
+    username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+    password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+};
 const formData = ref({
-    username: 'vistor',
-    password: '123456'
-})
-const remember = ref(false)
+    username: "",
+    password: "",
+});
+const remember = ref(false);
 
 const handleLogin = () => {
     loginFormRef.value?.validate((valid) => {
         if (valid) {
-            userStore.login(formData.value as LoginParams, remember.value)
+            userStore.login(formData.value as LoginParams, remember.value);
         }
-    })
-}
+    });
+};
 </script>
 
 <template>

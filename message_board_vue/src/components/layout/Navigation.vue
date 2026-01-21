@@ -1,119 +1,127 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { navigation } from '@/config/navigation'
-import { useUserStore } from '@/stores/modules/user'
-import { storeToRefs } from 'pinia'
-import type { UserInfo } from '@/types/user'
+import { onMounted, ref, computed, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { navigation } from "@/config/navigation";
+import { useUserStore } from "@/stores/modules/user";
+import { storeToRefs } from "pinia";
+import type { UserInfo } from "@/types/user";
 
-const userStore = useUserStore()
-const router = useRouter()
-const route = useRoute()
+const userStore = useUserStore();
+const router = useRouter();
+const route = useRoute();
 
 // 用户登录状态（后续可以从store获取）
-const showUserMenu = ref(false)
-const showMobileMenu = ref(false)
-const isLoggedIn = computed(() => userStore.token !== "")
-const currentPath = ref('')
+const showUserMenu = ref(false);
+const showMobileMenu = ref(false);
+const isLoggedIn = computed(() => userStore.token !== "");
+const currentPath = ref("");
 
 // 用户信息（后续可以从store获取）
-const { userInfo } = storeToRefs(userStore)
+const { userInfo } = storeToRefs(userStore);
 
 // 初始化用户数据
 onMounted(async () => {
-    await userStore.initUserStore()
+    await userStore.initUserStore();
+});
 
-
-})
-
-watch(() => route.path, (newPath) => {
-    currentPath.value = newPath
-})
+watch(
+    () => route.path,
+    (newPath) => {
+        showUserMenu.value = false;
+        currentPath.value = newPath;
+    },
+);
 
 // 导航到指定路径
 const navigateTo = (path: string) => {
-    router.push(path)
-    showMobileMenu.value = false
-}
+    router.push(path);
+    showMobileMenu.value = false;
+};
 
 // 跳转到登录页面
 const goToLogin = () => {
     router.push({
         name: "Auth",
         params: {
-            tab: "login"
-        }
-    })
-    showUserMenu.value = false
-    showMobileMenu.value = false
-}
+            tab: "login",
+        },
+    });
+    showUserMenu.value = false;
+    showMobileMenu.value = false;
+};
 
 // 跳转到注册页面
 const goToRegister = () => {
     router.push({
         name: "Auth",
         params: {
-            tab: "register"
-        }
-    })
-    showUserMenu.value = false
-    showMobileMenu.value = false
-}
+            tab: "register",
+        },
+    });
+    showUserMenu.value = false;
+    showMobileMenu.value = false;
+};
 
 // 切换用户菜单
 const toggleUserMenu = () => {
-    showUserMenu.value = !showUserMenu.value
-}
+    showUserMenu.value = !showUserMenu.value;
+};
 
 // 切换移动端菜单
 const toggleMobileMenu = () => {
-    showMobileMenu.value = !showMobileMenu.value
-}
+    showMobileMenu.value = !showMobileMenu.value;
+};
 
 // 点击外部关闭菜单
 const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as HTMLElement
-    if (!target.closest('.user-menu-container') && !target.closest('.mobile-menu-button')) {
-        showUserMenu.value = false
+    const target = event.target as HTMLElement;
+    if (
+        !target.closest(".user-menu-container") &&
+        !target.closest(".mobile-menu-button")
+    ) {
+        showUserMenu.value = false;
     }
-    if (!target.closest('.mobile-menu-container') && !target.closest('.mobile-menu-button')) {
-        showMobileMenu.value = false
+    if (
+        !target.closest(".mobile-menu-container") &&
+        !target.closest(".mobile-menu-button")
+    ) {
+        showMobileMenu.value = false;
     }
-}
+};
 
 // 检查当前路由是否激活
 const isActive = (path: string) => {
-    return route.path === path
-}
+    return route.path === path;
+};
 
 // 跳转到用户中心
 const toUserCenter = () => {
     router.push({
         name: "User",
         params: {
-            id: userInfo?.value?.uid
-        }
-    })
-}
+            id: userInfo?.value?.uid,
+        },
+    });
+};
 
 const isUserCenter = computed(() => {
-    return currentPath.value.includes('/user')
-})
+    return currentPath.value.includes("/user");
+});
 
 // 退出登录
 const handleLogout = () => {
-    userStore.logout()
-    showUserMenu.value = false
-    showMobileMenu.value = false
-    router.push('/')
-}
+    userStore.logout();
+    showUserMenu.value = false;
+    showMobileMenu.value = false;
+    router.push("/");
+};
 
 const filterNavigation = computed(() => {
-    const userRole = userStore.userInfo?.role || 'user'
-    return navigation.filter(item => {
-        return !(item.role === 'admin' && userRole !== 'admin')
-    })
-})
+    const userRole = userStore.userInfo?.role || "user";
+    return navigation.filter((item) => {
+        return !(item.role === "admin" && userRole !== "admin");
+    });
+});
 </script>
 
 <template>
@@ -121,15 +129,16 @@ const filterNavigation = computed(() => {
         <div class="nav-container">
             <!-- 左侧 Logo -->
             <div class="nav-logo flex items-center gap-2" @click="navigateTo('/')">
-                <img class="lazy-image w-10 h-10" src="/logo.svg" alt="" srcset="">
+                <img class="lazy-image w-10 h-10" src="/logo.svg" alt="" srcset="" />
                 <span class="logo-text">留言板</span>
             </div>
 
             <!-- 中间导航链接 -->
             <div class="nav-links" ref="nav-links">
-                <a v-for="item in filterNavigation" :key="item.path"
-                    :class="['nav-link flex items-center gap-2', { active: isActive(item.path) }]"
-                    @click.prevent="navigateTo(item.path)">
+                <a v-for="item in filterNavigation" :key="item.path" :class="[
+                    'nav-link flex items-center gap-2',
+                    { active: isActive(item.path) },
+                ]" @click.prevent="navigateTo(item.path)">
                     <el-icon :size="20" :color="isActive(item.path) ? 'blue' : 'gray'">
                         <component :is="item.icon" />
                     </el-icon>
@@ -155,7 +164,8 @@ const filterNavigation = computed(() => {
 
                     <!-- 用户下拉菜单 -->
                     <div v-if="isLoggedIn && showUserMenu" class="user-dropdown">
-                        <div v-if="!isUserCenter" class="dropdown-item" @click="toUserCenter">个人中心
+                        <div v-if="!isUserCenter" class="dropdown-item" @click="toUserCenter">
+                            个人中心
                         </div>
                         <!-- <div class="dropdown-item">设置</div> -->
                         <div class="dropdown-divider"></div>
@@ -165,8 +175,12 @@ const filterNavigation = computed(() => {
 
                 <!-- 移动端：未登录时显示登录/注册按钮 -->
                 <div v-if="!isLoggedIn" class="mobile-auth-buttons">
-                    <button class="mobile-btn-login-small" @click="goToLogin">登录</button>
-                    <button class="mobile-btn-register-small" @click="goToRegister">注册</button>
+                    <button class="mobile-btn-login-small" @click="goToLogin">
+                        登录
+                    </button>
+                    <button class="mobile-btn-register-small" @click="goToRegister">
+                        注册
+                    </button>
                 </div>
 
                 <!-- 移动端菜单按钮 -->
@@ -185,10 +199,14 @@ const filterNavigation = computed(() => {
                 </a>
                 <div v-if="!isLoggedIn" class="mobile-auth">
                     <button class="mobile-btn-login" @click="goToLogin">登录</button>
-                    <button class="mobile-btn-register" @click="goToRegister">注册</button>
+                    <button class="mobile-btn-register" @click="goToRegister">
+                        注册
+                    </button>
                 </div>
                 <div v-else class="mobile-user-info">
-                    <div class="mobile-user-item" v-if="!isUserCenter" @click="toUserCenter">个人中心</div>
+                    <div class="mobile-user-item" v-if="!isUserCenter" @click="toUserCenter">
+                        个人中心
+                    </div>
                     <!-- <div class="mobile-user-item">设置</div> -->
                     <div class="mobile-user-item" @click="handleLogout">退出登录</div>
                 </div>

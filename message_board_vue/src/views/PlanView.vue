@@ -85,148 +85,148 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import Navigation from '@/components/layout/Navigation.vue'
-import { CircleCheck, Loading, Clock } from '@element-plus/icons-vue'
+import { computed } from "vue";
+import Navigation from "@/components/layout/Navigation.vue";
+import { CircleCheck, Loading, Clock } from "@element-plus/icons-vue";
 
 interface PlanItem {
-    id: string
-    name: string
-    description: string
-    date: string
-    status: 'completed' | 'in-progress' | 'planned'
-    progress?: number
+    id: string;
+    name: string;
+    description: string;
+    date: string;
+    status: "completed" | "in-progress" | "planned";
+    progress?: number;
 }
 
 // 开发计划数据
 const plans: PlanItem[] = [
     {
-        id: '1',
-        name: '用户登录注册功能',
-        description: '实现用户登录、注册页面，包含表单验证和用户认证功能',
-        date: '2025-01-01',
-        status: 'completed'
+        id: "1",
+        name: "用户登录注册功能",
+        description: "实现用户登录、注册页面，包含表单验证和用户认证功能",
+        date: "2025-01-01",
+        status: "completed",
     },
     {
-        id: '2',
-        name: '留言板列表展示',
-        description: '实现留言列表的展示，支持分页和筛选功能',
-        date: '2025-01-02',
-        status: 'completed'
+        id: "2",
+        name: "留言板列表展示",
+        description: "实现留言列表的展示，支持分页和筛选功能",
+        date: "2025-01-02",
+        status: "completed",
     },
     {
-        id: '3',
-        name: '留言详情页面',
-        description: '实现留言详情页，展示留言内容和回复列表',
-        date: '2025-01-03',
-        status: 'completed'
+        id: "3",
+        name: "留言详情页面",
+        description: "实现留言详情页，展示留言内容和回复列表",
+        date: "2025-01-03",
+        status: "completed",
     },
     {
-        id: '4',
-        name: '富文本编辑器',
-        description: '集成富文本编辑器，支持表情、格式化等功能',
-        date: '2025-01-04',
-        status: 'completed'
+        id: "4",
+        name: "富文本编辑器",
+        description: "集成富文本编辑器，支持表情、格式化等功能",
+        date: "2025-01-04",
+        status: "completed",
     },
     {
-        id: '5',
-        name: '响应式布局优化',
-        description: '优化移动端适配，确保在不同设备上良好显示',
-        date: '2025-01-05',
-        status: 'completed'
+        id: "5",
+        name: "响应式布局优化",
+        description: "优化移动端适配，确保在不同设备上良好显示",
+        date: "2025-01-05",
+        status: "completed",
     },
     {
-        id: '6',
-        name: '数据持久化',
-        description: '实现后端API接口，完成数据持久化存储（MongoDB）',
-        date: '2025-01-06',
-        status: 'completed'
+        id: "6",
+        name: "数据持久化",
+        description: "实现后端API接口，完成数据持久化存储（MongoDB）",
+        date: "2025-01-06",
+        status: "completed",
     },
     {
-        id: '7',
-        name: '留言回复功能',
-        description: '实现留言回复功能，支持添加、编辑、删除回复，包含用户信息关联',
-        date: '2025-01-07',
-        status: 'completed'
+        id: "7",
+        name: "留言回复功能",
+        description: "实现留言回复功能，支持添加、编辑、删除回复，包含用户信息关联",
+        date: "2025-01-07",
+        status: "completed",
     },
     {
-        id: '8',
-        name: '留言点赞功能',
-        description: '实现留言点赞功能，支持点赞、取消点赞和点赞状态查询',
-        date: '2025-01-08',
-        status: 'completed'
+        id: "8",
+        name: "留言点赞功能",
+        description: "实现留言点赞功能，支持点赞、取消点赞和点赞状态查询",
+        date: "2025-01-08",
+        status: "completed",
     },
     {
-        id: '9',
-        name: '用户信息关联',
-        description: '在查询消息和回复时自动关联用户信息（昵称、头像、UID）',
-        date: '2025-01-09',
-        status: 'completed'
+        id: "9",
+        name: "用户信息关联",
+        description: "在查询消息和回复时自动关联用户信息（昵称、头像、UID）",
+        date: "2025-01-09",
+        status: "completed",
     },
     {
-        id: '10',
-        name: '用户个人中心',
-        description: '实现用户个人中心页面，包含个人信息、留言管理等功能',
-        date: '2025-01-10',
-        status: 'in-progress',
-        progress: 70
+        id: "10",
+        name: "用户个人中心",
+        description: "实现用户个人中心页面，包含个人信息、留言管理等功能",
+        date: "2025-01-10",
+        status: "in-progress",
+        progress: 80,
     },
     {
-        id: '11',
-        name: '留言搜索功能',
-        description: '实现留言搜索功能，支持关键词搜索和高级筛选',
-        date: '2025-01-15',
-        status: 'planned'
+        id: "11",
+        name: "留言搜索功能",
+        description: "实现留言搜索功能，支持关键词搜索和高级筛选",
+        date: "2025-01-15",
+        status: "completed",
     },
     {
-        id: '12',
-        name: '回复通知功能',
-        description: '实现回复通知功能，当用户收到回复时发送通知',
-        date: '2025-01-20',
-        status: 'planned'
+        id: "12",
+        name: "回复通知功能",
+        description: "实现回复通知功能，当用户收到回复时发送通知",
+        date: "2025-01-20",
+        status: "completed",
     },
     {
-        id: '13',
-        name: '嵌套回复功能',
-        description: '支持回复的回复，实现多级嵌套回复结构',
-        date: '2025-01-25',
-        status: 'planned'
+        id: "13",
+        name: "嵌套回复功能",
+        description: "支持回复的回复，实现多级嵌套回复结构",
+        date: "2025-01-25",
+        status: "planned",
     },
     {
-        id: '14',
-        name: '用户权限管理',
-        description: '实现用户权限管理，支持管理员功能',
-        date: '2025-02-01',
-        status: 'planned'
+        id: "14",
+        name: "用户权限管理",
+        description: "实现用户权限管理，支持管理员功能",
+        date: "2025-02-01",
+        status: "completed",
     },
     {
-        id: '15',
-        name: '性能优化',
-        description: '优化页面加载速度，实现懒加载和代码分割',
-        date: '2025-02-05',
-        status: 'planned'
+        id: "15",
+        name: "性能优化",
+        description: "优化页面加载速度，实现懒加载和代码分割",
+        date: "2025-02-05",
+        status: "planned",
     },
     {
-        id: '16',
-        name: '文件上传功能',
-        description: '实现图片和文件上传功能，支持OSS存储',
-        date: '2025-02-10',
-        status: 'planned'
-    }
-]
+        id: "16",
+        name: "文件上传功能",
+        description: "实现图片和文件上传功能，支持OSS存储",
+        date: "2025-02-10",
+        status: "completed",
+    },
+];
 
 // 按状态分类
 const completedPlans = computed(() =>
-    plans.filter(plan => plan.status === 'completed')
-)
+    plans.filter((plan) => plan.status === "completed"),
+);
 
 const inProgressPlans = computed(() =>
-    plans.filter(plan => plan.status === 'in-progress')
-)
+    plans.filter((plan) => plan.status === "in-progress"),
+);
 
 const plannedPlans = computed(() =>
-    plans.filter(plan => plan.status === 'planned')
-)
+    plans.filter((plan) => plan.status === "planned"),
+);
 </script>
 
 <style scoped>

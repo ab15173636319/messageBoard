@@ -11,37 +11,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import ChatList from '@/components/layout/ChatList.vue'
-import { useMessageStore } from '@/stores/modules/message'
-import type { MessageItem } from '@/types/message'
+import { ref, onMounted } from "vue";
+import ChatList from "@/components/layout/ChatList.vue";
+import { useMessageStore } from "@/stores/modules/message";
+import type { MessageItem } from "@/types/message";
 
-const messageStore = useMessageStore()
-const loading = ref(false)
-const messageList = ref<MessageItem[]>([])
+const messageStore = useMessageStore();
+const loading = ref(false);
+const messageList = ref<MessageItem[]>([]);
 
 const loadMessages = async () => {
-    loading.value = true
+    loading.value = true;
     try {
-        await messageStore.queryMessage()
-        messageList.value = messageStore.messageList
+        await messageStore.queryMessage();
+        messageList.value = messageStore.messageList;
     } catch (error) {
-        console.error('加载留言失败:', error)
+        console.error("加载留言失败:", error);
     } finally {
-        loading.value = false
+        loading.value = false;
     }
-}
+};
 
 onMounted(() => {
-    loadMessages()
-})
+    loadMessages();
+});
 </script>
 
 <style scoped>
 @reference "../../App.css";
 
 .message-manage {
-    @apply w-full h-full p-6 bg-white rounded-lg shadow-md;
+    @apply w-full p-6 bg-white rounded-lg shadow-md;
 }
 
 .header {

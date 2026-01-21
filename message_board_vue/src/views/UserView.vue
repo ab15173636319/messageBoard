@@ -5,9 +5,7 @@
                 @click="handleMenuClick(item)">
                 {{ item.name }}
             </div>
-            <div class="menu-item logout" @click="handleLogout">
-                退出登录
-            </div>
+            <div class="menu-item logout" @click="handleLogout">退出登录</div>
         </div>
         <div class="content">
             <Transition name="user">
@@ -19,75 +17,75 @@
 
 <script setup lang="ts">
 // ==================== 导入 ====================
-import { computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/modules/user'
-import { ElMessageBox } from 'element-plus'
+import { computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useUserStore } from "@/stores/modules/user";
+import { ElMessageBox } from "element-plus";
 
 // ==================== Store 和 Router 实例 ====================
-const router = useRouter()
-const route = useRoute()
-const userStore = useUserStore()
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
 
 // ==================== 菜单配置 ====================
 const menuItems = [
     {
-        name: '留言管理',
-        routeName: 'UserMessages'
+        name: "留言管理",
+        routeName: "UserMessages",
     },
     {
-        name: '回复管理',
-        routeName: 'UserRemarks'
+        name: "回复管理",
+        routeName: "UserRemarks",
     },
     {
-        name: '头像管理',
-        routeName: 'UserAvatar'
+        name: "头像管理",
+        routeName: "UserAvatar",
     },
     {
-        name: '个人信息',
-        routeName: 'UserProfile'
+        name: "个人信息",
+        routeName: "UserProfile",
     },
     {
-        name: '修改密码',
-        routeName: 'UserPassword'
-    }
-]
+        name: "修改密码",
+        routeName: "UserPassword",
+    },
+];
 
 // ==================== 计算属性 ====================
-const userId = computed(() => route.params.id as string)
+const userId = computed(() => route.params.id as string);
 
 // ==================== 方法 ====================
 const isActive = (routeName: string) => {
-    return route.name === routeName
-}
+    return route.name === routeName;
+};
 
 const handleMenuClick = (item: { name: string; routeName: string }) => {
     router.push({
         name: item.routeName,
-        params: { id: userId.value }
-    })
-}
+        params: { id: userId.value },
+    });
+};
 
 const handleLogout = async () => {
     try {
-        await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        })
-        userStore.logout()
-        router.push('/')
+        await ElMessageBox.confirm("确定要退出登录吗？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+        });
+        userStore.logout();
+        router.push("/");
     } catch {
         // 用户取消操作
     }
-}
+};
 </script>
 
 <style scoped>
 @reference "../App.css";
 
 .user-view {
-    @apply w-full h-[calc(100vh-64px)] flex p-5 gap-5;
+    @apply w-full min-h-[calc(100vh-64px)] flex p-5 gap-5;
 }
 
 .sidebar {

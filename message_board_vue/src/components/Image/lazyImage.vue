@@ -109,7 +109,8 @@ const rounded = computed(() => {
     background-color: #dfe4ea;
     overflow: hidden;
     position: relative;
-    border-radius: 10px;
+
+    border-radius: v-bind(rounded);
 }
 
 .skeleton::before {
